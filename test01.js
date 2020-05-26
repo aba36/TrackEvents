@@ -3,16 +3,18 @@
  **  Executable Name: test01.js
  **          Creator: Jacob Solomon
  **    Creation Date: 24-May-2020
+ **      Modified By: Jacob Solomon; 26-May-2020
  **      Modified By:
  **    
  **  DESCRIPTION:
  **
- **   This test is designed to measure the maximum event processing rate on a
- **   given HW. While it is a synthetic test, and doesn't represent a
- **   "real-life" scenario, it can provide a measure of the maximum event
- **   processing power of an underlying HW. Furthermore, this test provides a
+ **   This test is designed to measure the maximum raw throughput event
+ **   processing power of the underlying HW. While it is a synthetic test,
+ **   and doesn't represent a "real-life" scenario, it is useful in determining
+ **   the top performance of an underlying HW. Furthermore, this test provides a
  **   sanity check to ensure that the loop iteration count is equal the number
- **   of events registered. Also the count() function is tested.
+ **   of events registered. Also the count() function is tested, see limitations
+ **   & assumptions for further details.
  **
  **
  **  The test was performed on the following HW:
@@ -40,8 +42,11 @@
  **
  **    delay_milliseconds - the number of milliseconds to delay the calling of
  **      event count(). It represents the delay in time since the last event was 
- **      processed. As a result, if value is set to 2000 (2 sec delay) and
- **      count_seconds is set to 1 then the event count() result should be zero 
+ **      processed. It is used to simulate a testing scenario with zero events
+ **      when calling the count(num) method.
+ **
+ **      Examples: if delay_milliseconds=2000 (2 sec delay) and
+ **      count_seconds=1 then the event count() result should be zero 
  **      since there were no events in the seconds passed the last event
  **      processed. If delay_milliseconds=0 & count_secnods=1 then event
  **      count() should equal the last event tally, and so on. If
@@ -51,7 +56,7 @@
  **
  **    count_seconds - defines the number of seconds count() will return.
  **      count(num) num equals the value set by count_seconds and can be a
- **      value between 1 & 300 seconds. It represents events count over the
+ **      number between 1 & 300 seconds. It represents events count over the
  **      time interval specified in seconds.
  ** 
  ** 
@@ -73,6 +78,8 @@ let count_seconds = 1;
 let track = new TrackEvents();
 
 let start = performance.now();
+
+// Generate the events
 for (let i=0; i < loop_count; i++){
     track.push();
 }
@@ -85,7 +92,10 @@ let second = 1;
 let total = 0;
 let tmp;
 
-console.log('\nTest summary results: \n')
+console.log('\nTest results summary')
+console.log('====================\n')
+
+console.log('Event tally by second:')
 for (let i=0; i < track._arr.length; i++){
     tmp = track._arr[i];
     if (tmp === 0){
@@ -115,7 +125,7 @@ else{
 
 tmp = Math.floor(end - start);
 
-console.log('\nInsert events perfomance:')
+console.log('\nRaw insert events performance:')
 console.log(`Test duration=${tmp} milliseconds`)
 console.log(`Events per second=${Math.floor((total/tmp)*1000)}`)
 

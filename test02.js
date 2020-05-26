@@ -3,13 +3,15 @@
  **  Executable Name: test02.js
  **          Creator: Jacob Solomon
  **    Creation Date: 24-May-2020
+ **      Modified By: Jacob Solomon; 26-May-2020
  **      Modified By:
  **    
  **  DESCRIPTION:
  **
- **    This benchmark executes concurrently event put() and count()
- **    operations using JavaScript timers. It represents worst
- **    case performance scenario. See (1) below for further details.
+ **    This test is designed to measure a realistic testing scenario.
+ **    The test executes concurrently event put() and count()
+ **    operations using JavaScript timers. See limitation &
+ **    assumptions for more details.
  **
  **  The test was performed on the following HW:
  **  Tested Hardware:
@@ -21,12 +23,12 @@
  **
  **  Performance results:
  **
- **     Test was run with maximum event put() rate & 1 second count(1)
- **     repeated every second for a duration of 300 seconds.
+ **     Test was performed with maximum event put() rate & 1 second
+ **     count(1) repeated every second for a duration of 300 seconds.
  **
- **      1.4 million events per second processing rate
- **      process memory resident size: 42MB stable
- **      CPU utilization: 100% (consumed a single core)
+ **      Event Processing Rate: 1.5 million events per second
+ **         Memory Utilization: process memory resident size: 42MB stable
+ **            CPU Utilization: 100% of a single CPU
  **
  **
  **  LIMITATIONS & ASSUMPTIONS:
@@ -50,22 +52,25 @@
  **         setTimeout - will be used to execute count(num) operation on
  **             per second multiples, i.e. no more than one a second.
  **
- ** 2) This benchmark can run for extended period of time to measure the
+ ** 2) This benchmark can run for extended periods of time to measure the
  **     script's memory resident size to ensure there are no memory leaks.
  **     In addition, CPU utilization can be monitored to verify that CPU
- **     is utilization is efficient.
+ **     utilization is efficient.
  **
  ** 3) Benchmark Global Variables Settings:
  **
- **     rum_time - the number of seconds to execute the test. It can be set
- **         for a long time, while monitoring OS memory & CPU utilization
- **         to verify that there is no memory leaks and efficient CPU use.
+ **     run_time - the number of seconds to execute the test. Setting it
+ **         to a large value will enable the monitoring of memory & CPU
+ **         utilization over an extended period of time, to ensure there
+ **         are no memory leaks and that the CPU is used efficiently.
  **
- **     count_time - how often to execute count(). It is in milliseconds
- **         and needs to be incrimented by whole seconds value.
+ **     count_time - how often to execute count(). An integer specifying,
+ **         in milliseconds, how often to call count(). It needs to be
+ **         incrimented by multiples of 1000
  ** 
- **     count_num - this is the value to pass to count(count_num). It
- **         specifies to count() over how many seconds to tally the events.
+ **     count_num - the value to pass to method count(count_num). An
+ **         integer representing the number of seconds over which to
+ **         count the events.
  ** 
  ************************************************************************************/
 
@@ -73,9 +78,8 @@
 
 // Global Variables Settings:
 let run_time = 5; // the number of seconds the benchmark should execute
-let count_time = 1000; // millisecond time, how often to exectur count()
+let count_time = 1000; // millisecond time, how often to execute count()
 let count_num = 1; // number of seconds to count(count_num) over
-
 
 const TrackEvents = require('./track_events');
 
@@ -83,9 +87,12 @@ const {performance} = require('perf_hooks');
 
 let track = new TrackEvents();
 
+// Mark the time the test began
+const time_zero = performance.now();
+
 function runCount() {
 
-  const sec = Math.floor(performance.now()/1000);
+  const sec = Math.floor((performance.now() - time_zero)/1000);
   if(sec > run_time){
       console.log('\nEND: count()......');
      return;
@@ -99,7 +106,8 @@ function runCount() {
 }
 
 function runPush(){
-    const sec = Math.floor(performance.now()/1000);
+
+    const sec = Math.floor((performance.now() - time_zero)/1000);
     if(sec > run_time){
         console.log('\nEND: push().....');
         return;

@@ -1,32 +1,24 @@
 
-Events tracker - process and returns the count of number
-  events, over a one second intervals, in a moving 300
+Events tracker - process and returns the count of number of
+  events, in a one second resolution over a moving 300
   seconds window.
 
-For additional information review the self-documented scripts.
+For additional information see the self-documented scripts.
 
 
 Files/scripts description:
 
 The node js tracking module:
+
 track_events.js - the library
+
 
 
 Testing scenarios:
 
 test01.js - self-contained synthetic test designed to measure
-    the maximum event processing throughput.
+    the maximum raw throughput event processing power of the
+    underlying HW.
 
-test02.js - self-contained synthetic test designed to measure
-    a more realistic testing scenario.
-
-test03_xxxx - this is a client/server network testing designed
-    to represent a real-life scenario. It is made up of the
-    following script files:
-
-    test03_server.js - the sever performing the tracking
-    test03_events.js - a client connecting to the server
-        generating events.
-    test03_count.js - a client connecting to the server
-        retrieving event counts.
-
+test02.js - self-contained test designed to measure
+    a realistic testing scenario.
